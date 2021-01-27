@@ -26,23 +26,25 @@ public class MainActivity extends AppCompatActivity {
      * 用户ID,由数字组成,长度为15~25个字符
      */
     public String userId = "用户ID";
+    private String ak = "4564";
+    private String sk = "45648";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //初始化okhttp和retrofit
         NetWorkManager.getInstance().init();
         //
-        Gson gson = new Gson();
+        /*Gson gson = new Gson();
         HashMap<String, String> map = new HashMap<>();
         map.put("ak","69478724020200723095502");
         map.put("sk","6947872402020072309550205c4cc70987e44e88803896d0ee47730");
         String strEntity = gson.toJson(map);
-        RequestBody body = RequestBody.create(MediaType.parse("Content-Type:application/json"), strEntity);
+        RequestBody body = RequestBody.create(MediaType.parse("Content-Type:application/json"), strEntity);*/
         NetWorkManager.getService()
-                .getAccessToken(userId, body)
+                .getAccessToken(userId, ak, sk)
                 .enqueue(new Callback<TokenBean>() {
                     @Override
                     public void onResponse(Call<TokenBean> call, Response<TokenBean> response) {
