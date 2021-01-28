@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TestActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <Button
+            android:id="@+id/getToken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="获取北向接口认证Token" />
+
+        <Button
+            android:id="@+id/getDeviceList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查询设备列表" />
+
+        <Button
+            android:id="@+id/getDeviceInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查询设备信息" />
+        <Button
+            android:id="@+id/getDeviceGateway"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查询设备网关" />
+        <Button
+            android:id="@+id/alterDeviceInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="修改设备信息" />
+        <Button
+            android:id="@+id/alterDeviceAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="修改国标设备账号" />
+        <Button
+            android:id="@+id/addDeviceHolo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="添加设备(仅支持好望协议)" />
+        <Button
+            android:id="@+id/addDevicesBatchGB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="批量添加设备(仅支持GB协议)" />
+        <Button
+            android:id="@+id/deleteDevicesBatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="批量删除设备" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_test"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:gravity="center"
+        android:background="@color/colorGray"
+        android:text="test_activity"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

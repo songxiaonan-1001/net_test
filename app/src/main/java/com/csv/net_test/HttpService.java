@@ -1,5 +1,7 @@
 package com.csv.net_test;
 
+import com.csv.net_test.bean.DeviceBean;
+import com.csv.net_test.bean.DeviceGatewayBean;
 import com.csv.net_test.bean.DeviceInfoBean;
 import com.csv.net_test.bean.TokenBean;
 import com.csv.net_test.bean.XXBean;
@@ -27,7 +29,8 @@ import retrofit2.http.QueryMap;
  * @date: 2021/1/26
  */
 public interface HttpService {
-    String BASE_URL = "XXXXXXXXXXXXXX";
+    //    String BASE_URL = "https://124.70.24.176";
+    String BASE_URL = "https://121.36.77.165";
 
     /**认证管理*/
     /**
@@ -40,7 +43,7 @@ public interface HttpService {
      */
     @FormUrlEncoded
     @POST("/v1/{user_id}/enterprises/access-token")
-    Call<TokenBean> getAccessToken(@Path("user_id") String userId, @Field("ak") String ak, @Field("sk") String sk);
+    Call<String> getAccessToken(@Path("user_id") String userId, @Field("ak") String ak, @Field("sk") String sk);
 
 
     /**设备管理*/
@@ -61,7 +64,8 @@ public interface HttpService {
      * @param params  Query参数
      * @return
      */
-    Call<XXBean> getDeviceList(@Path("user_id") String user_id, @QueryMap Map<String, String> params);
+    @GET("/v1/{user_id}/devices")
+    Call<DeviceBean> getDeviceList(@Path("user_id") String user_id, @FieldMap Map<String, Object> params);
 
     /**
      * 查询设备网关详情 (仅支持国标)
@@ -71,7 +75,7 @@ public interface HttpService {
      * @return
      */
     @GET("/v1/{user_id}/devices/{device_id}/gateway")
-    Call<XXBean> getDeviceGateway(@Path("user_id") String userId, @Path("device_id") String deviceId);
+    Call<DeviceGatewayBean> getDeviceGateway(@Path("user_id") String userId, @Path("device_id") String deviceId);
 
     /**
      * 用户提交修改的设备信息，设备处于上线状态才可以修改设备名称
@@ -409,64 +413,71 @@ public interface HttpService {
 
     /**
      * 删除用户消息通知URL
+     *
      * @param userId
      * @param subscription_type
      * @return
      */
     @DELETE("/v1/{user_id}/messages/callback")
-    Call<XXBean> deleteUserMessagesUrl(@Path("user_id") String userId,@Query("subscription_type")String subscription_type);
+    Call<XXBean> deleteUserMessagesUrl(@Path("user_id") String userId, @Query("subscription_type") String subscription_type);
 
     /**
      * 查询用户消息通知URL
+     *
      * @param userId
      * @param subscription_type
      * @return
      */
     @GET("/v1/{user_id}/messages/callback")
-    Call<XXBean> queryUserMessagesUrl(@Path("user_id") String userId,@Query("subscription_type")String subscription_type);
+    Call<XXBean> queryUserMessagesUrl(@Path("user_id") String userId, @Query("subscription_type") String subscription_type);
 
     /**服务开通关闭管理*/
 
     /**
      * 通道开通资源（管理、全量、动检、行业数据流）能力，支持批量
+     *
      * @param userId
      * @param map
      * @return
      */
     @POST("/v1/{user_id}/devices/channels/resources")
-    Call<XXBean> openDevicesChannelsResources(@Path("user_id") String userId,@FieldMap Map<String,Object>map);
+    Call<XXBean> openDevicesChannelsResources(@Path("user_id") String userId, @FieldMap Map<String, Object> map);
 
     /**
      * 通道关闭资源（管理、全量、动检、行业数据流）能力，支持批量
+     *
      * @param userId
      * @param map
      * @return
      */
     @DELETE("/v1/{user_id}/devices/channels/resources")
-    Call<XXBean> closeDevicesChannelsResources(@Path("user_id") String userId,@FieldMap Map<String,Object>map);
+    Call<XXBean> closeDevicesChannelsResources(@Path("user_id") String userId, @FieldMap Map<String, Object> map);
 
     /**资源管理*/
     /**
      * 查询包周期和按需资源列表。购买套餐后会生成包周期资源，开通了按需计费时会生成按需资源。
+     *
      * @param userId
      * @param map
      * @return
      */
     @GET("/v1/{user_id}/resources")
-    Call<XXBean> queryUserResources(@Path("user_id") String userId,@QueryMap Map<String,Object>map);
+    Call<XXBean> queryUserResources(@Path("user_id") String userId, @QueryMap Map<String, Object> map);
 
     /**
      * 用户查询包周期或按需资源下的通道列表
+     *
      * @param userId
      * @param resource_id
      * @param map
      * @return
      */
     @GET("/v1/{user_id}/resources/{resource_id}/channels")
-    Call<XXBean> queryUserResourcesChannels(@Path("user_id") String userId,@Path("resource_id") String resource_id,@QueryMap Map<String,Integer>map);
+    Call<XXBean> queryUserResourcesChannels(@Path("user_id") String userId, @Path("resource_id") String resource_id, @QueryMap Map<String, Integer> map);
 
     /**
      * 用户查询通道下的资源列表
+     *
      * @param userId
      * @param device_id
      * @param channel_id
