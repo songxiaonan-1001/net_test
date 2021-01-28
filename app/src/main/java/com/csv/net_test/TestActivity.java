@@ -29,8 +29,8 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
      * 用户ID,由数字组成,长度为15~25个字符
      */
     private String userId = "174367170720210126145700";
-    private String ak = "VL6UCQKHM9AQF7M2Q311";
-    private String sk = "lbekwuYdg6X6kDVB1xrNSIpps6BLOkRD6HfY71WE";
+    private String ak = "178661947120210128195511";
+    private String sk = "178661947120210128195511693dc92939ac43a9ac5ee834bfb701e7";
     private Button getToken;
     private Button getDeviceList;
     private Button getDeviceInfo;
@@ -94,7 +94,6 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.getToken:
-                Log.i(TAG, "onClick: 11111111111");
                 //获取用户北向接口认证Token
                 NetWorkManager.getService()
                         .getAccessToken(userId, ak, sk)
@@ -111,7 +110,6 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                                 Toast.makeText(TestActivity.this, "获取Token失败,请检查相关参数", Toast.LENGTH_SHORT).show();
                             }
                         });
-                Log.i(TAG, "onClick: 222");
                 break;
             case R.id.getDeviceList:
                 //查询设备列表

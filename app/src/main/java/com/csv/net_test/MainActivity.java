@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
      * 用户ID,由数字组成,长度为15~25个字符
      */
     private String userId = "174367170720210126145700";
-    private String ak = "VL6UCQKHM9AQF7M2Q311";
-    private String sk = "lbekwuYdg6X6kDVB1xrNSIpps6BLOkRD6HfY71WE";
+    private String ak = "178661947120210128195511";
+    private String sk = "178661947120210128195511693dc92939ac43a9ac5ee834bfb701e7";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<String> call, Response<String> response) {
                         String access_token = response.body().toString();
                         Log.i(TAG, "onResponse: 返回的Token参数" + access_token);
+                        Toast.makeText(MainActivity.this, access_token, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
