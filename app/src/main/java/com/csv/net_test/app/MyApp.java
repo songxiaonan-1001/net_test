@@ -2,6 +2,8 @@ package com.csv.net_test.app;
 
 import android.app.Application;
 
+import com.csv.net_test.NetWorkManager;
+
 /**
  * @author CSV
  * @describe:
@@ -14,6 +16,8 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
         myApp = this;
+        //初始化okhttp和retrofit
+        NetWorkManager.getInstance().init();
     }
 
     public static MyApp getInstance() {

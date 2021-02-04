@@ -12,13 +12,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.csv.net_test.bean.DeviceBean;
 import com.csv.net_test.bean.DeviceGatewayBean;
 import com.csv.net_test.bean.DeviceInfoBean;
+import com.csv.net_test.bean.GetTokenBean;
+import com.csv.net_test.bean.TokenBean;
 import com.csv.net_test.bean.XXBean;
+import com.csv.net_test.utils.SpUtil;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author CSV
@@ -42,6 +56,8 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     private Button deleteDevicesBatch;
     private TextView tvTest;
     private HashMap<String, Object> deviceMap;
+    private SpUtil spUtil;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +81,9 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         deviceMap.put("sort_by", "");//排序字段(默认按创建时间)
 
 
+        spUtil = new SpUtil(TestActivity.this, "sp_token");
+        token = spUtil.getString("token", "");
+
     }
 
     private void initView() {
@@ -78,6 +97,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         addDevicesBatchGB = findViewById(R.id.addDevicesBatchGB);
         deleteDevicesBatch = findViewById(R.id.deleteDevicesBatch);
         tvTest = findViewById(R.id.tv_test);
+        tvTest.setText(new SpUtil(TestActivity.this, "sp_token").getString("token", "暂无信息!"));
 
         getToken.setOnClickListener(this);
         getDeviceList.setOnClickListener(this);
@@ -94,74 +114,19 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.getToken:
-                //获取用户北向接口认证Token
-                NetWorkManager.getService()
-                        .getAccessToken(userId, ak, sk)
-                        .equals(new Callback<String>() {
-                            @Override
-                            public void onResponse(Call<String> call, Response<String> response) {
-                                String access_token = response.body().toString();
-                                Log.i(TAG, "onResponse: 返回的Token参数" + access_token);
-                            }
-
-                            @Override
-                            public void onFailure(Call<String> call, Throwable t) {
-                                Log.e(TAG, "onFailure: 获取Token失败");
-                                Toast.makeText(TestActivity.this, "获取Token失败,请检查相关参数", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                getToken();
                 break;
             case R.id.getDeviceList:
                 //查询设备列表
-                NetWorkManager.getService()
-                        .getDeviceList(userId, deviceMap)
-                        .enqueue(new Callback<DeviceBean>() {
-                            @Override
-                            public void onResponse(Call<DeviceBean> call, Response<DeviceBean> response) {
-                                String string = response.body().toString();
-                                Log.i(TAG, "onResponse: " + string);
-                            }
-
-                            @Override
-                            public void onFailure(Call<DeviceBean> call, Throwable t) {
-                                Log.i(TAG, "onFailure: 查询设备列表失败");
-                                Toast.makeText(TestActivity.this, "查询设备列表失败,请重试", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                getDeviceList();
                 break;
             case R.id.getDeviceInfo:
                 //查询设备信息
-                NetWorkManager.getService()
-                        .getDeviceInfo(userId, new DeviceBean().getDevices().get(0).getDevice_id())
-                        .enqueue(new Callback<DeviceInfoBean>() {
-                            @Override
-                            public void onResponse(Call<DeviceInfoBean> call, Response<DeviceInfoBean> response) {
-                                String string = response.body().toString();
-                                Log.i(TAG, "onResponse: 获取到的设备信息" + string);
-                            }
-
-                            @Override
-                            public void onFailure(Call<DeviceInfoBean> call, Throwable t) {
-                                Log.i(TAG, "onFailure: 获取设备信息失败,请检查");
-                            }
-                        });
+                getDeviceInfo();
                 break;
             case R.id.getDeviceGateway:
                 //查询设备网关
-                NetWorkManager.getService()
-                        .getDeviceGateway(userId,new DeviceBean().getDevices().get(0).getDevice_id())
-                        .enqueue(new Callback<DeviceGatewayBean>() {
-                            @Override
-                            public void onResponse(Call<DeviceGatewayBean> call, Response<DeviceGatewayBean> response) {
-                                String string = response.body().toString();
-                                Log.i(TAG, "onResponse: ");
-                            }
 
-                            @Override
-                            public void onFailure(Call<DeviceGatewayBean> call, Throwable t) {
-
-                            }
-                        });
                 break;
             case R.id.alterDeviceInfo:
                 //修改设备信息
@@ -178,5 +143,86 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    /**
+     * 获取Token
+     */
+    private void getToken() {
+        HashMap<String, Object> params = new HashMap<>(2);
+        params.put("ak", ak);
+        params.put("sk", sk);
+        String json = new GsonBuilder()
+                .disableHtmlEscaping()
+                .create()
+                .toJson(params);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+
+
+        //获取用户北向接口认证Token
+        NetWorkManager.getService()
+                .getAccessToken(userId, body)
+                .enqueue(new Callback<TokenBean>() {
+                    @Override
+                    public void onResponse(Call<TokenBean> call, Response<TokenBean> response) {
+                        String token = response.body().getAccess_token();
+                        Log.i(TAG, "onResponse:获取到的token " + token);
+                        new SpUtil(TestActivity.this, "sp_token").putString("token", token);
+                    }
+
+                    @Override
+                    public void onFailure(Call<TokenBean> call, Throwable t) {
+                        Log.e(TAG, "onFailure: " + t.toString());
+                        Log.e(TAG, "onFailure: 获取Token失败");
+                        Toast.makeText(TestActivity.this, "获取Token失败,请检查相关参数", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    /**
+     * 获取设备列表(设备id)
+     */
+    private void getDeviceList() {
+        NetWorkManager.getService()
+                .getDeviceList(userId, token)
+                .enqueue(new Callback<DeviceBean>() {
+                    @Override
+                    public void onResponse(Call<DeviceBean> call, Response<DeviceBean> response) {
+//                        List<DeviceBean.DevicesBean> devices = response.body().getDevices();
+//                        Log.i(TAG, "onResponse: "+devices.toString());
+//                        DeviceBean deviceBean = new Gson().fromJson(response.body().getDevices().toString(), DeviceBean.class);
+//                        int total = deviceBean.getTotal();
+//                        response.body().getDevices().toString()
+
+//                        String string = response.body().getDevices().toString();
+                        for (int i = 0; i < response.body().getTotal(); i++) {
+                            //遍历出设备id
+                            String device_id = response.body().getDevices().get(i).getDevice_id();
+                            new SpUtil(TestActivity.this, "sp_token").putString("device_id" + i, device_id);
+                            Log.i(TAG, "onResponse: " + device_id);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DeviceBean> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    private void getDeviceInfo() {
+        NetWorkManager.getService()
+                .getDeviceInfo(userId, new SpUtil(TestActivity.this, "sp_token").getString("device_id" + 0, ""), token)
+                .enqueue(new Callback<DeviceInfoBean>() {
+                    @Override
+                    public void onResponse(Call<DeviceInfoBean> call, Response<DeviceInfoBean> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<DeviceInfoBean> call, Throwable t) {
+
+                    }
+                });
     }
 }

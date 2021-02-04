@@ -1,2 +1,4 @@
+include ':module_net'
+include ':module_basic'
 include ':app'
 rootProject.name = "net_test"

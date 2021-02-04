@@ -6,15 +6,18 @@ import com.csv.net_test.bean.DeviceInfoBean;
 import com.csv.net_test.bean.TokenBean;
 import com.csv.net_test.bean.XXBean;
 
+import org.json.JSONObject;
+
 import java.util.Map;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -22,6 +25,7 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 
 /**
  * @author CSV
@@ -29,21 +33,18 @@ import retrofit2.http.QueryMap;
  * @date: 2021/1/26
  */
 public interface HttpService {
-    //    String BASE_URL = "https://124.70.24.176";
     String BASE_URL = "https://121.36.77.165";
 
     /**认证管理*/
     /**
      * 获取用户北向接口认证AccessToken
      *
-     * @param userId 用户ID
-     * @param ak     ak
-     * @param sk     sk
+     * @param userId
+     * @param body
      * @return
      */
-    @FormUrlEncoded
-    @POST("/v1/{user_id}/enterprises/access-token")
-    Call<String> getAccessToken(@Path("user_id") String userId, @Field("ak") String ak, @Field("sk") String sk);
+    @POST("/v1/{userId}/enterprises/access-token")
+    Call<TokenBean> getAccessToken(@Path("userId") String userId, @Body RequestBody body);
 
 
     /**设备管理*/
@@ -55,17 +56,17 @@ public interface HttpService {
      * @return
      */
     @GET("/v1/{user_id}/devices/{device_id}")
-    Call<DeviceInfoBean> getDeviceInfo(@Path("user_id") String userId, @Path("device_id") String deviceId);
+    Call<DeviceInfoBean> getDeviceInfo(@Path("user_id") String userId, @Path("device_id") String deviceId,@Header("Access-Token") String header);
 
     /**
      * 用户查询设备列表
      *
      * @param user_id 用户ID
-     * @param params  Query参数
+//     * @param params  Query参数
      * @return
      */
     @GET("/v1/{user_id}/devices")
-    Call<DeviceBean> getDeviceList(@Path("user_id") String user_id, @FieldMap Map<String, Object> params);
+    Call<DeviceBean> getDeviceList(@Path("user_id") String user_id/*, @FieldMap Map<String, Object> params*/, @Header("Access-Token") String header);
 
     /**
      * 查询设备网关详情 (仅支持国标)

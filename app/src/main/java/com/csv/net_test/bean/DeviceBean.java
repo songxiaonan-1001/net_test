@@ -156,5 +156,31 @@ public class DeviceBean {
         public void setChannel_total(int channel_total) {
             this.channel_total = channel_total;
         }
+
+        @Override
+        public String toString() {
+            return "DevicesBean{" +
+                    "device_id='" + device_id + '\'' +
+                    ", device_name='" + device_name + '\'' +
+                    ", device_state='" + device_state + '\'' +
+                    ", device_system_state='" + device_system_state + '\'' +
+                    ", device_type='" + device_type + '\'' +
+                    ", manufacture='" + manufacture + '\'' +
+                    ", device_ability='" + device_ability + '\'' +
+                    ", access_protocol='" + access_protocol + '\'' +
+                    ", description='" + description + '\'' +
+                    ", create_time='" + create_time + '\'' +
+                    ", update_time='" + update_time + '\'' +
+                    ", channel_total=" + channel_total +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "DeviceBean{" +
+                "total=" + total +
+                ", devices=" + devices +
+                '}';
     }
 }
