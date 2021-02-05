@@ -1,5 +1,6 @@
 package com.csv.net_test;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -54,6 +55,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     private Button addDeviceHolo;
     private Button addDevicesBatchGB;
     private Button deleteDevicesBatch;
+    private Button gotoPlay;
     private TextView tvTest;
     private HashMap<String, Object> deviceMap;
     private SpUtil spUtil;
@@ -96,6 +98,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         addDeviceHolo = findViewById(R.id.addDeviceHolo);
         addDevicesBatchGB = findViewById(R.id.addDevicesBatchGB);
         deleteDevicesBatch = findViewById(R.id.deleteDevicesBatch);
+        gotoPlay = findViewById(R.id.gotoPlay);
         tvTest = findViewById(R.id.tv_test);
         tvTest.setText(new SpUtil(TestActivity.this, "sp_token").getString("token", "暂无信息!"));
 
@@ -108,6 +111,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         addDeviceHolo.setOnClickListener(this);
         addDevicesBatchGB.setOnClickListener(this);
         deleteDevicesBatch.setOnClickListener(this);
+        gotoPlay.setOnClickListener(this);
     }
 
     @Override
@@ -139,6 +143,9 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.addDevicesBatchGB:
                 //批量添加设备(仅支持GB28181协议)
+                break;
+            case R.id.gotoPlay:
+                startActivity(new Intent(TestActivity.this,PlayActivity.class));
                 break;
             default:
                 break;

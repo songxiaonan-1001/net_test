@@ -62,6 +62,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="批量删除设备" />
+        <Button
+            android:id="@+id/gotoPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="播放界面" />
 
 
     </LinearLayout>
