@@ -6,18 +6,56 @@ import android.content.SharedPreferences.Editor;
 
 /**
  * @author CSV
- * @describe: SP工具类
+ * @describe: SharedPreferences工具类(支持保存和提取 Sting,boolean,float,int,long类型数据)
+ * 注:如果不关心返回 SharedPreferences 的返回值，edit 之后，用 apply()，不要用 commit():
  * @date: 2021/1/29
  */
 public class SpUtil {
-    private Editor editor;
-    private SharedPreferences preferences;
+    private static Context mContext;
+    private static SharedPreferences preferences;
+    private static Editor editor;
+    private static String name = "MIX";
 
-    public SpUtil(Context context, String fileName) {
-        preferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        editor = preferences.edit();
+    /**
+     * 初始化(可以放在BaseApplication中统一初始化)
+     *
+     * @param context 上下文
+     */
+    public static void init(Context context) {
+        try {
+            if (mContext == null) {
+                mContext = context;
+                //Context.MODE_PRIVATE：为默认操作模式，代表该文件是私有数据，只能被应用本身访问，在该模式下，写入的内容会覆盖原文件的内容，
+                //如果想把新写入的内容追加到原文件中。可以使用Context.MODE_APPEND
+                preferences = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+                editor = preferences.edit();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * 初始化
+     *
+     * @param context  上下文
+     * @param fileName 自定义文件名
+     */
+    public static void init(Context context, String fileName) {
+        try {
+            if (mContext == null) {
+                mContext = context;
+                preferences = mContext.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+                editor = preferences.edit();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Context getContext() {
+        return mContext;
+    }
 
     /**
      * 向SP存入指定key对应的数据
@@ -26,37 +64,59 @@ public class SpUtil {
      * @param key
      * @param value
      */
-    public void putString(String key, String value) {
+    public static void putString(String key, String value) {
         editor.putString(key, value);
-        editor.commit();
+        editor.apply();
     }
 
-    public void putBoolean(String key, boolean value) {
+    /**
+     * 保存boolean
+     * @param key
+     * @param value
+     */
+    public static void putBoolean(String key, boolean value) {
         editor.putBoolean(key, value);
-        editor.commit();
+        editor.apply();
     }
 
-    public void putFloat(String key, float value) {
+    /**
+     * 保存float
+     * @param key
+     * @param value
+     */
+    public static void putFloat(String key, float value) {
         editor.putFloat(key, value);
-        editor.commit();
+        editor.apply();
     }
 
-    public void putInt(String key, int value) {
+    /**
+     * 保存int
+     * @param key
+     * @param value
+     */
+    public static void putInt(String key, int value) {
         editor.putInt(key, value);
-        editor.commit();
+        editor.apply();
     }
 
-    public void putLong(String key, long value) {
+    /**
+     * 保存long
+     * @param key
+     * @param value
+     */
+    public static void putLong(String key, long value) {
         editor.putLong(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     /**
      * 清空SP里所以数据
      */
-    public void clear() {
-        editor.clear();
-        editor.commit();
+    public static void clear() {
+        if (null != editor) {
+            editor.clear();
+            editor.apply();
+        }
     }
 
     /**
@@ -64,35 +124,81 @@ public class SpUtil {
      *
      * @param key
      */
-    public void remove(String key) {
-        editor.remove(key);
-        editor.commit();
+    public static void remove(String key) {
+        if (null != editor) {
+            editor.remove(key);
+            editor.apply();
+        }
     }
 
     /**
+     * 读取String
      * 获取SP数据里指定key对应的value。如果key不存在，则返回默认值defValue。
      *
      * @param key
      * @param defValue
      * @return
      */
-    public String getString(String key, String defValue) {
+    public static String getString(String key, String defValue) {
+        if (null == preferences) {
+            preferences = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+        }
         return preferences.getString(key, defValue);
     }
 
-    public boolean getBoolean(String key, boolean defValue) {
+    /**
+     * 读取boolean
+     *
+     * @param key
+     * @param defValue
+     * @return
+     */
+    public static boolean getBoolean(String key, boolean defValue) {
+        if (null == preferences) {
+            preferences = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+        }
         return preferences.getBoolean(key, defValue);
     }
 
-    public float getFloat(String key, float defValue) {
+    /**
+     * 读取float
+     *
+     * @param key
+     * @param defValue
+     * @return
+     */
+    public static float getFloat(String key, float defValue) {
+        if (null == preferences) {
+            preferences = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+        }
         return preferences.getFloat(key, defValue);
     }
 
-    public int getInt(String key, int defValue) {
+    /**
+     * 读取int
+     *
+     * @param key
+     * @param defValue
+     * @return
+     */
+    public static int getInt(String key, int defValue) {
+        if (null == preferences) {
+            preferences = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+        }
         return preferences.getInt(key, defValue);
     }
 
-    public long getLong(String key, long defValue) {
+    /**
+     * 读取long
+     *
+     * @param key
+     * @param defValue
+     * @return
+     */
+    public static long getLong(String key, long defValue) {
+        if (null == preferences) {
+            preferences = mContext.getSharedPreferences(name, Context.MODE_PRIVATE);
+        }
         return preferences.getLong(key, defValue);
     }
 
@@ -102,7 +208,7 @@ public class SpUtil {
      * @param key
      * @return
      */
-    public boolean contains(String key) {
+    public static boolean contains(String key) {
         return preferences.contains(key);
     }
 }

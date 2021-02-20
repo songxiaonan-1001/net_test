@@ -11,29 +11,20 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.csv.net_test.bean.DeviceBean;
-import com.csv.net_test.bean.DeviceGatewayBean;
 import com.csv.net_test.bean.DeviceInfoBean;
-import com.csv.net_test.bean.GetTokenBean;
 import com.csv.net_test.bean.TokenBean;
-import com.csv.net_test.bean.XXBean;
+import com.csv.net_test.consts.SharedPreferenceKey;
+import com.csv.net_test.net.NetWorkManager;
 import com.csv.net_test.utils.SpUtil;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
-import java.util.List;
 
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author CSV
@@ -82,9 +73,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         deviceMap.put("offset", "");//偏移量页数(0-2147483646,默认0)
         deviceMap.put("sort_by", "");//排序字段(默认按创建时间)
 
-
-        spUtil = new SpUtil(TestActivity.this, "sp_token");
-        token = spUtil.getString("token", "");
+        token = SpUtil.getString(SharedPreferenceKey.LoginKey.TOKEN, "");
 
     }
 
@@ -100,7 +89,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         deleteDevicesBatch = findViewById(R.id.deleteDevicesBatch);
         gotoPlay = findViewById(R.id.gotoPlay);
         tvTest = findViewById(R.id.tv_test);
-        tvTest.setText(new SpUtil(TestActivity.this, "sp_token").getString("token", "暂无信息!"));
+        tvTest.setText(SpUtil.getString("token", "暂无信息!"));
 
         getToken.setOnClickListener(this);
         getDeviceList.setOnClickListener(this);
@@ -145,7 +134,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                 //批量添加设备(仅支持GB28181协议)
                 break;
             case R.id.gotoPlay:
-                startActivity(new Intent(TestActivity.this,PlayActivity.class));
+                startActivity(new Intent(TestActivity.this, PlayActivity.class));
                 break;
             default:
                 break;
@@ -174,7 +163,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                     public void onResponse(Call<TokenBean> call, Response<TokenBean> response) {
                         String token = response.body().getAccess_token();
                         Log.i(TAG, "onResponse:获取到的token " + token);
-                        new SpUtil(TestActivity.this, "sp_token").putString("token", token);
+                        SpUtil.putString(SharedPreferenceKey.LoginKey.TOKEN, token);
                     }
 
                     @Override
@@ -205,21 +194,22 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                         for (int i = 0; i < response.body().getTotal(); i++) {
                             //遍历出设备id
                             String device_id = response.body().getDevices().get(i).getDevice_id();
-                            new SpUtil(TestActivity.this, "sp_token").putString("device_id" + i, device_id);
+                            SpUtil.putString("device_id" + i, device_id);
                             Log.i(TAG, "onResponse: " + device_id);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<DeviceBean> call, Throwable t) {
-
+                        //如果失败就从新获取Token
+                        getToken();
                     }
                 });
     }
 
     private void getDeviceInfo() {
         NetWorkManager.getService()
-                .getDeviceInfo(userId, new SpUtil(TestActivity.this, "sp_token").getString("device_id" + 0, ""), token)
+                .getDeviceInfo(userId, SpUtil.getString("device_id" + 0, ""), token)
                 .enqueue(new Callback<DeviceInfoBean>() {
                     @Override
                     public void onResponse(Call<DeviceInfoBean> call, Response<DeviceInfoBean> response) {

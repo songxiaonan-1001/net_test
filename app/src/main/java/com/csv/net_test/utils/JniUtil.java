@@ -3,7 +3,7 @@ package com.csv.net_test.utils;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.csv.net_test.app.MyApp;
+import com.csv.net_test.app.BaseApplication;
 import com.jovision.jvplay.Jni;
 
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class JniUtil {
     private static final String TAG = "JniUtil";
 
-    public static HashMap<Integer, Integer> windowPlayerIdMap = MyApp.getInstance().getPlayerIdWindowMap();//
+    public static HashMap<Integer, Integer> windowPlayerIdMap = BaseApplication.getInstance().getPlayerIdWindowMap();//
 
 
     /**
@@ -26,7 +26,6 @@ public class JniUtil {
         return initRes;
     }
 
-
     /**
      * 播放库释放
      * @return
@@ -35,8 +34,6 @@ public class JniUtil {
         Jni.holosensPlayerRelease();
         Log.e(TAG,"function=holosensPlayerRelease");
     }
-
-
 
     /**
      * 连接方法
@@ -49,12 +46,11 @@ public class JniUtil {
 
         Log.e(TAG, "function=connect:playerId=" + playerId + ", jvmp=" + url);
         if (playerId > 0) {
-            MyApp.getInstance().playerIdWindowMap.put(playerId, window);
+            BaseApplication.getInstance().playerIdWindowMap.put(playerId, window);
             windowPlayerIdMap.put(window,playerId);
             return true;
         }
         return false;
-
     }
 
     /**
@@ -110,7 +106,7 @@ public class JniUtil {
 
         Log.e(TAG, "function=holosensPlayerConnectByP2p:playerId=" + playerId + ", p2p_info=" + p2p_info);
         if (playerId > 0) {
-            MyApp.getInstance().playerIdWindowMap.put(playerId, window);
+            BaseApplication.getInstance().playerIdWindowMap.put(playerId, window);
             windowPlayerIdMap.put(window,playerId);
         }
         Log.e(TAG,"function=holosensPlayerConnectByP2p:p2p_info="+p2p_info+";window="+window+";stream_index="+stream_index);
@@ -155,7 +151,7 @@ public class JniUtil {
         Log.e(TAG,"function=holosensPlayerPlayRecordByP2p:p2p_info="+p2p_info+";channel_index="+channel_index+";begin_time="+begin_time+";playerId="+playerId);
 
         if (playerId > 0) {
-            MyApp.getInstance().playerIdWindowMap.put(playerId, window);
+            BaseApplication.getInstance().playerIdWindowMap.put(playerId, window);
             windowPlayerIdMap.put(window,playerId);
         }
         return playerId;
