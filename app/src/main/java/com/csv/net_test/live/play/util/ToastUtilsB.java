@@ -26,7 +26,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.huawei.holosens.R;
+import com.csv.net_test.R;
 
 import java.lang.reflect.Field;
 

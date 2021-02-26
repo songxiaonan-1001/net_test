@@ -76,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:gravity="center"
-        android:background="@color/colorGray"
+        android:background="@color/gray"
         android:text="test_activity"
         app:layout_constraintBottom_toBottomOf="parent" />
 

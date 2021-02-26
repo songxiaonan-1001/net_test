@@ -91,7 +91,6 @@ public class NetWorkManager {
                     String encoded = new BigInteger(1 /* positive */, pubkey.getEncoded()).toString(16);
                     // Pin it!
                     final boolean expected = PUB_KEY.equalsIgnoreCase(encoded);
-
                     if (!expected) {
                         throw new CertificateException("checkServerTrusted: Expected public key: "
                                 + PUB_KEY + ", got public key:" + encoded);

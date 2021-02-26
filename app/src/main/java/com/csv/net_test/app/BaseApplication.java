@@ -10,9 +10,9 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.csv.net_test.IHandlerLikeNotify;
 import com.csv.net_test.NativeCbConsts;
-import com.csv.net_test.NetWorkManager;
 import com.csv.net_test.PlayActivity;
 import com.csv.net_test.live.play.event.MsgEvent;
+import com.csv.net_test.net.NetWorkManager;
 import com.csv.net_test.utils.BackgroundHandler;
 import com.csv.net_test.utils.SpUtil;
 
